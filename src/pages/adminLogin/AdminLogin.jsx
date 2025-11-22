@@ -28,6 +28,8 @@ const AdminLogin = () => {
       // Store only what PrivateRoute and Apollo need
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("name", user.name);
+      localStorage.setItem("role", user.role);
 
       // Redirect to admin dashboard
       navigate("/admin/app/page");

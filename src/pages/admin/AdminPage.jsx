@@ -5,6 +5,7 @@ import { createRoom } from "../../graphql/mutation/createRoom"; // adjust path
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client/react";
 import { bookings as BOOKINGS_QUERY } from "../../graphql/queries/bookings";
+import Navbar from "../../components/navbar/Navbar";
 
 const AdminPage = () => {
   const navigate = useNavigate();
@@ -78,6 +79,7 @@ const AdminPage = () => {
 
   return (
     <div className="container" style={{ width: "100%" }}>
+      <Navbar />
       <nav className="admin-nav" style={{ width: "100%" }}>
         <h1>Admin Panel</h1>
       </nav>

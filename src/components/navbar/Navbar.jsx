@@ -24,12 +24,22 @@ const Navbar = () => {
   useEffect(() => {
     // Check if user is already authenticated
     const token = localStorage.getItem("token");
-    const storedUsername = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("user");
     const storedRole = localStorage.getItem("role");
+
+    let displayName = "";
+    if (storedUser) {
+      try {
+        const userObj = JSON.parse(storedUser);
+        displayName = userObj.name || storedUser;
+      } catch {
+        displayName = storedUser;
+      }
+    }
 
     if (token) {
       setIsAuthenticated(true);
-      setUsername(storedUsername);
+      setUsername(displayName);
       setRole(storedRole);
     }
   }, []);
