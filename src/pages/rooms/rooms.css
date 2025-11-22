@@ -1,0 +1,86 @@
+/* Room Page Styling */
+.container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+
+}
+
+.room-page {
+    text-align: center;
+    padding: 20px;
+}
+
+.rooms-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 20px; /* Adjust the spacing between cards */
+}
+
+/* Room Card Styling */
+.room-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 20px;
+    max-width: 300px; /* Adjust the width of the cards */
+    flex: 1 1 calc(33.333% - 40px); /* Responsive width for 3 columns with gap */
+    box-sizing: border-box;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.room-img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+.room-details {
+    padding: 20px;
+}
+
+.room-details h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.room-details p {
+    color: #666;
+    margin: 10px 0;
+}
+
+.room-details .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.room-details .btn:hover {
+    background-color: #45a049;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .rooms-list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .room-card {
+        max-width: 100%;
+    }
+}
