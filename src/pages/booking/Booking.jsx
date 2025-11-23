@@ -12,6 +12,11 @@ const Booking = () => {
 
   const bookings = data?.myBookings || [];
 
+  const handleReview = (bookingId) => {
+    // open the review modal
+    alert(`Open review modal for booking ID: ${bookingId}`);
+  };
+
   return (
     <>
       <Navbar />
@@ -40,6 +45,11 @@ const Booking = () => {
                   Total Price
                 </th>
                 <th style={{ padding: "10px", textAlign: "left" }}>Status</th>
+                <th style={{ padding: "10px", textAlign: "left" }}>Check In</th>
+                <th style={{ padding: "10px", textAlign: "left" }}>
+                  Check Out
+                </th>
+                <th style={{ padding: "10px", textAlign: "left" }}>Review</th>
               </tr>
             </thead>
 
@@ -60,6 +70,33 @@ const Booking = () => {
 
                   <td style={{ padding: "10px" }}>
                     {booking.status || "Confirmed"}
+                  </td>
+                  <td style={{ padding: "10px" }}>
+                    {booking.checkIn
+                      ? new Date(booking.checkIn).toLocaleDateString()
+                      : "N/A"}
+                  </td>
+                  <td style={{ padding: "10px" }}>
+                    {booking.checkOut
+                      ? new Date(booking.checkOut).toLocaleDateString()
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {booking.status === "CONFIRMED" && (
+                      <button
+                        onClick={() => handleReview(booking.id)}
+                        style={{
+                          padding: "6px 12px",
+                          backgroundColor: "#4CAF50",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Review
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

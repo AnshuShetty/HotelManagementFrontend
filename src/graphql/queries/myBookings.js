@@ -4,6 +4,8 @@ export const myBookings = gql(`
     query MyBookings {
     myBookings {
       id
+      checkIn
+      checkOut
       room {
         id
         number

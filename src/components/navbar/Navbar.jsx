@@ -61,12 +61,21 @@ const Navbar = () => {
             <li>
               <a href="/">Home</a>
             </li>
-            <li>
-              <a href="/rooms">Rooms</a>
-            </li>
-            <li>
-              <a href="/mybookings">My Bookings</a>
-            </li>
+            {String(role || "") !== "ADMIN" && (
+              <li>
+                <a href="/room">Rooms</a>
+              </li>
+            )}
+            {String(role || "") === "ADMIN" && (
+              <li>
+                <a href="/admin/app/room">Room</a>
+              </li>
+            )}
+            {String(role || "") !== "ADMIN" && (
+              <li>
+                <a href="/mybookings">My Bookings</a>
+              </li>
+            )}
             <li>
               <a href="/contact">Contact</a>
             </li>

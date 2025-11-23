@@ -19,6 +19,7 @@ import AdminPage from "./pages/admin/AdminPage";
 import AdminLogin from "./pages/adminLogin/AdminLogin";
 
 import PrivateRoute from "./components/PrivateRoute";
+import AdminRoom from "./pages/rooms/AdminRoom";
 
 const UserLayout = () => <Outlet />;
 const AdminLayout = () => <Outlet />;
@@ -35,8 +36,11 @@ function App() {
           <Route path="contact" element={<ContactUs />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route path="payment" element={<Payment />} />
-          <Route path="mybookings" element={<Booking />} />
+          {/* Protected routes: require user login */}
+          <Route element={<PrivateRoute type="USER" />}>
+            <Route path="payment" element={<Payment />} />
+            <Route path="mybookings" element={<Booking />} />
+          </Route>
         </Route>
 
         {/* ================ USER PROTECTED ROUTES ================ */}
@@ -55,6 +59,7 @@ function App() {
             <Route path="app" element={<Outlet />}>
               <Route index element={<AdminPage />} /> {/* URL: /admin/app */}
               <Route path="page" element={<AdminPage />} />{" "}
+              <Route path="room" element={<AdminRoom />} />
               {/* optional alias: /admin/app/dashboard */}
             </Route>
           </Route>
