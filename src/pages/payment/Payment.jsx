@@ -74,7 +74,10 @@ const Payment = () => {
       console.log("BOOKING RESPONSE:", data);
     } catch (error) {
       console.error("Error booking:", error);
-      alert("Booking failed!");
+      const backendMessage =
+        error?.graphQLErrors?.[0]?.message || "Booking failed!";
+
+      alert(backendMessage);
     }
   };
 
