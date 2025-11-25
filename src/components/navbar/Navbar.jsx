@@ -63,7 +63,7 @@ const Navbar = () => {
             </li>
             {String(role || "") !== "ADMIN" && (
               <li>
-                <a href="/room">Rooms</a>
+                <a href="/rooms">Rooms</a>
               </li>
             )}
             {String(role || "") === "ADMIN" && (
