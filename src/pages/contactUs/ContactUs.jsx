@@ -32,10 +32,7 @@ const ContactUs = () => {
     <div className="contact">
       <h2>Contact Us</h2>
       <div className="help">
-        <img
-          src="https://cdni.iconscout.com/illustration/premium/thumb/contact-us-5795988-4849052.png"
-          alt=""
-        />
+        <img src="" alt="" />
         <form onSubmit={handleSubmit}>
           <label>Name</label>
           <input
