@@ -59,7 +59,7 @@ const Navbar = () => {
         <div className={`nav-ele ${menuOpen ? "open" : ""}`}>
           <ul>
             <li>
-              <a href="/">Home</a>
+              <a href={role === "ADMIN" ? "/admin/app/page" : "/"}>Home</a>
             </li>
             {String(role || "") !== "ADMIN" && (
               <li>
@@ -73,7 +73,12 @@ const Navbar = () => {
             )}
             {String(role || "") !== "ADMIN" && (
               <li>
-                <a href="/mybookings">My Bookings</a>
+                <a href="/mybookings">Bookings</a>
+              </li>
+            )}
+            {String(role || "") !== "ADMIN" && (
+              <li>
+                <a href="/favorites">Favorites</a>
               </li>
             )}
             <li>

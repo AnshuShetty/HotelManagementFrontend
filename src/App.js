@@ -20,6 +20,7 @@ import AdminLogin from "./pages/adminLogin/AdminLogin";
 
 import PrivateRoute from "./components/PrivateRoute";
 import AdminRoom from "./pages/rooms/AdminRoom";
+import FavoriteRoom from "./pages/rooms/FavoriteRoom";
 
 const UserLayout = () => <Outlet />;
 const AdminLayout = () => <Outlet />;
@@ -36,6 +37,7 @@ function App() {
           <Route path="contact" element={<ContactUs />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="favorites" element={<FavoriteRoom />} />
           {/* Protected routes: require user login */}
           <Route element={<PrivateRoute type="USER" />}>
             <Route path="payment" element={<Payment />} />

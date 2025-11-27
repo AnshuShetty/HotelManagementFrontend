@@ -5,14 +5,26 @@ import RoomCard from "../../components/roomCard/RoomCard";
 import Navbar from "../../components/navbar/Navbar";
 import Footer from "../../components/footer/Footer";
 import "../rooms/rooms.css";
+import { useState } from "react";
 
 const Rooms = () => {
   const { loading, error, data } = useQuery(getRooms);
+  const [favorites, setFavorites] = useState([]);
 
   if (loading) return <p>Loading rooms...</p>;
   if (error) return <p>Error fetching rooms: {error.message}</p>;
 
   const rooms = data?.rooms || [];
+
+  const onToggleFavorite = (roomObj) => {
+    setFavorites((prev) => {
+      const exists = prev.find((r) => r.id === roomObj.id);
+
+      return exists
+        ? prev.filter((r) => r.id !== roomObj.id)
+        : [...prev, roomObj];
+    });
+  };
 
   return (
     <>
@@ -32,6 +44,8 @@ const Rooms = () => {
                     description={room.type}
                     price={room.pricePerNight}
                     availability={room.isActive ? "Available" : "Unavailable"}
+                    isFavorite={favorites.some((r) => r.id === room.id)}
+                    onToggleFavorite={() => onToggleFavorite(room)}
                   />
                 </div>
               ))
