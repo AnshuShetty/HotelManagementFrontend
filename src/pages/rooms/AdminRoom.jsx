@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@apollo/client/react";
 import { roomBookCount } from "../../graphql/queries/roomBookCount";
 import { UPDATE_ROOM } from "../../graphql/mutation/updateRoom";
 import Navbar from "../../components/navbar/Navbar";
+import { deleteRoom } from "../../graphql/mutation/deleteRoom";
 
 const AdminRoom = () => {
   const { data, loading, error, refetch } = useQuery(roomBookCount);
@@ -84,9 +85,20 @@ const AdminRoom = () => {
   };
 
   const handleDeleteRoom = (room) => {
-    alert(
-      `Delete Room functionality is not implemented yet for Room ID: ${room.id}`
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete Room ${room.number}? This action cannot be undone.`
     );
+    if (!confirmDelete) return;
+    deleteRoom({
+      variables: { deleteRoomId: room.id },
+    })
+      .then(() => {
+        alert("Room deleted successfully!");
+        refetch();
+      })
+      .catch((err) => {
+        alert("Error deleting room: " + err.message);
+      });
   };
 
   return (
@@ -122,7 +134,7 @@ const AdminRoom = () => {
                   Update
                 </button>
                 <button
-                  style={styles.updateBtn}
+                  style={styles.deleteBtn}
                   onClick={() => handleDeleteRoom(room)}
                 >
                   Delete Room
