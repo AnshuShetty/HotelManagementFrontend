@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import "../contactUs/contactus.css";
+import { submitContact } from "../../graphql/mutation/submitContact";
+import { useMutation } from "@apollo/client/react";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +12,9 @@ const ContactUs = () => {
   });
   const [responseMessage, setResponseMessage] = useState("");
 
+  //add the contact submission logic here
+  const [contactsubmitMutation, { loading }] = useMutation(submitContact);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -16,24 +22,27 @@ const ContactUs = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Replace this with real submit logic (API call)
+    contactsubmitMutation({
+      variables: {
+        input: {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        },
+      },
+    });
     setResponseMessage(
       "Thanks for contacting us! We will get back to you soon."
     );
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-    });
+    setFormData({ name: "", email: "", phone: "", message: "" });
   };
 
   return (
     <div className="contact">
       <h2>Contact Us</h2>
-      <div className="help">
-        <img src="" alt="" />
-        <form onSubmit={handleSubmit}>
+      <div className="contact-container">
+        {/* Contact Form */}
+        <form className="contact-form" onSubmit={handleSubmit}>
           <label>Name</label>
           <input
             type="text"
@@ -42,6 +51,7 @@ const ContactUs = () => {
             onChange={handleChange}
             required
           />
+
           <label>Email</label>
           <input
             type="email"
@@ -50,14 +60,7 @@ const ContactUs = () => {
             onChange={handleChange}
             required
           />
-          <label>Phone Number</label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
+
           <label>Message</label>
           <textarea
             name="message"
@@ -65,8 +68,9 @@ const ContactUs = () => {
             onChange={handleChange}
             required
           ></textarea>
+
           <button type="submit">Submit</button>
-          {responseMessage && <p>{responseMessage}</p>}
+          {responseMessage && <p className="response">{responseMessage}</p>}
         </form>
       </div>
     </div>

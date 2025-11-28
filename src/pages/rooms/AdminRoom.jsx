@@ -83,6 +83,12 @@ const AdminRoom = () => {
     }
   };
 
+  const handleDeleteRoom = (room) => {
+    alert(
+      `Delete Room functionality is not implemented yet for Room ID: ${room.id}`
+    );
+  };
+
   return (
     <div>
       <Navbar />
@@ -106,7 +112,6 @@ const AdminRoom = () => {
             <tr key={room.id}>
               <td style={styles.td}>{room.number}</td>
               <td style={styles.td}>{room.amenities?.join(", ") || "None"}</td>
-              <td style={styles.td}>{room.number}</td>
               <td style={styles.td}>{room.type}</td>
               <td style={styles.td}>{room.bookingCount}</td>
               <td style={styles.td}>
@@ -115,6 +120,12 @@ const AdminRoom = () => {
                   onClick={() => handleUpdateRoom(room)}
                 >
                   Update
+                </button>
+                <button
+                  style={styles.updateBtn}
+                  onClick={() => handleDeleteRoom(room)}
+                >
+                  Delete Room
                 </button>
               </td>
             </tr>

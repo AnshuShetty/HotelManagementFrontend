@@ -1,20 +1,62 @@
 import React from "react";
 import Navbar from "../../components/navbar/Navbar";
 import Footer from "../../components/footer/Footer";
-import { useQuery } from "@apollo/client/react";
+import { useQuery, useMutation } from "@apollo/client/react";
 import { myBookings } from "../../graphql/queries/myBookings";
+import PopupModal from "../../components/popupModel/PopupModal";
+import { useState } from "react";
+import { addReview } from "../../graphql/mutation/addReview";
 
 const Booking = () => {
   const { data, loading, error } = useQuery(myBookings);
 
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+
+  const [submitReview] = useMutation(addReview, {
+    onCompleted: () => {
+      alert("Review submitted successfully!");
+      setModalOpen(false);
+      setRating(0);
+      setComment("");
+    },
+    onError: (err) => {
+      alert(err.message);
+    },
+  });
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading bookings.</p>;
 
   const bookings = data?.myBookings || [];
 
+  const handleSubmit = () => {
+    if (!rating || !comment.trim()) {
+      alert("Please provide a rating and comment.");
+      return;
+    }
+
+    submitReview({
+      variables: {
+        input: {
+          bookingId: selectedBooking,
+          roomId: bookings.find((b) => b.id === selectedBooking)?.room?.id,
+          rating,
+          comment,
+        },
+      },
+    });
+  };
+
+  const handleStarClick = (star) => {
+    setRating(star);
+  };
+
   const handleReview = (bookingId) => {
-    // open the review modal
-    alert(`Open review modal for booking ID: ${bookingId}`);
+    setSelectedBooking(bookingId);
+    setModalOpen(true);
   };
 
   return (
@@ -114,6 +156,57 @@ const Booking = () => {
           </p>
         )}
       </div>
+
+      <PopupModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+        <h2 style={{ marginBottom: "12px" }}>Rate Your Stay</h2>
+
+        {/* ⭐ Rating Stars */}
+        <div style={{ marginBottom: "16px" }}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <span
+              key={star}
+              style={{
+                fontSize: "30px",
+                cursor: "pointer",
+                color: star <= rating ? "#FFD700" : "#ccc",
+              }}
+              onClick={() => handleStarClick(star)}
+            >
+              ★
+            </span>
+          ))}
+        </div>
+
+        {/* 💬 Comment Input */}
+        <textarea
+          placeholder="Write your review..."
+          rows="4"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+            marginBottom: "16px",
+          }}
+        />
+
+        <button
+          onClick={handleSubmit}
+          style={{
+            background: "#4caf50",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: "6px",
+            border: "none",
+            cursor: "pointer",
+            width: "100%",
+          }}
+        >
+          Submit Review
+        </button>
+      </PopupModal>
 
       <Footer />
     </>
