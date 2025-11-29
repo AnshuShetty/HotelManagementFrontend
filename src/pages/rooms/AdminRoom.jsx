@@ -3,11 +3,13 @@ import { useQuery, useMutation } from "@apollo/client/react";
 import { roomBookCount } from "../../graphql/queries/roomBookCount";
 import { UPDATE_ROOM } from "../../graphql/mutation/updateRoom";
 import Navbar from "../../components/navbar/Navbar";
-import { deleteRoom } from "../../graphql/mutation/deleteRoom";
+import { deleteRoom as DELETE_ROOM } from "../../graphql/mutation/deleteRoom";
 
 const AdminRoom = () => {
   const { data, loading, error, refetch } = useQuery(roomBookCount);
   const [updateRoom] = useMutation(UPDATE_ROOM);
+  const [deleteRoom, { loading: deleteRoomLoading, error: deleteRoomError }] =
+    useMutation(DELETE_ROOM);
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,21 +86,22 @@ const AdminRoom = () => {
     }
   };
 
-  const handleDeleteRoom = (room) => {
+  const handleDeleteRoom = async (room) => {
     const confirmDelete = window.confirm(
       `Are you sure you want to delete Room ${room.number}? This action cannot be undone.`
     );
     if (!confirmDelete) return;
-    deleteRoom({
-      variables: { deleteRoomId: room.id },
-    })
-      .then(() => {
-        alert("Room deleted successfully!");
-        refetch();
-      })
-      .catch((err) => {
-        alert("Error deleting room: " + err.message);
+
+    try {
+      await deleteRoom({
+        variables: { deleteRoomId: room.id },
       });
+
+      alert("Room deleted successfully!");
+      refetch();
+    } catch (err) {
+      alert("Error deleting room: " + err.message);
+    }
   };
 
   return (
