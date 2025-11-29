@@ -10,11 +10,10 @@ import { useState } from "react";
 const Rooms = () => {
   const { loading, error, data } = useQuery(getRooms);
   const [favorites, setFavorites] = useState([]);
+  const rooms = data?.rooms || [];
 
   if (loading) return <p>Loading rooms...</p>;
   if (error) return <p>Error fetching rooms: {error.message}</p>;
-
-  const rooms = data?.rooms || [];
 
   const onToggleFavorite = (roomObj) => {
     setFavorites((prev) => {
@@ -34,7 +33,7 @@ const Rooms = () => {
           <h1>Our Rooms</h1>
 
           <div className="rooms-list">
-            {rooms.length > 0 ? (
+            {rooms && rooms.length > 0 ? (
               rooms.map((room) => (
                 <div key={room.id} className="room-card">
                   <RoomCard

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../roomCard/roomCard.css";
 
@@ -43,11 +43,31 @@ const RoomCard = ({
   isFavorite,
   onToggleFavorite,
 }) => {
+  useEffect(() => {
+    // debug: confirm props received for each card
+    // remove or disable in production
+    // eslint-disable-next-line no-console
+    console.debug("RoomCard rendered:", { id, title, image, isFavorite });
+  }, [id, title, image, isFavorite]);
+
   return (
-    <div className="room-card">
-      <img src={image} alt={"RoomImage"} className="room-img" />
+    <div className="room-card" data-room-id={id || "no-id"}>
+      <img
+        src={
+          image ||
+          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+        }
+        alt={title || "Room image"}
+        className="room-img"
+        loading="lazy"
+      />
       {/* Favorite Icon */}
-      <div className="favorite-icon" onClick={() => onToggleFavorite(id)}>
+      <div
+        className="favorite-icon"
+        onClick={() => {
+          if (typeof onToggleFavorite === "function") onToggleFavorite(id);
+        }}
+      >
         {isFavorite ? (
           <HeartFilled className="heart filled" />
         ) : (
@@ -55,14 +75,15 @@ const RoomCard = ({
         )}
       </div>
       <div className="room-details">
-        <h3>{title}</h3>
-        <p>Type: {description}</p>
+        <h3>{title || "Untitled Room"}</h3>
+        <p>Type: {description || "—"}</p>
         <p>
-          <strong>Price:</strong> ${price} per night
+          <strong>Price:</strong>{" "}
+          {price != null ? `$${price} per night` : "N/A"}
         </p>
-        <p>{availability ? "Available" : "Not Available"}</p>{" "}
+        <p>{availability ? "Available" : "Not Available"}</p>
         {/* Check if room is available */}
-        <Link to={`/rooms/${id}`} className="btn">
+        <Link to={`/rooms/${id || ""}`} className="btn">
           Book Now
         </Link>
       </div>

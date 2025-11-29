@@ -26,7 +26,7 @@ const Footer = () => {
             </li>
           </ul>
         </div>
-        <div className="footer-section contact">
+        <div className="footer-section ">
           <h2>Contact Us</h2>
           <p>Email: info@hotelavinya.com</p>
           <p>Phone: +91 98765 43210</p>
