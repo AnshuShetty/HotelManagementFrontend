@@ -6,6 +6,7 @@ import { myBookings } from "../../graphql/queries/myBookings";
 import PopupModal from "../../components/popupModel/PopupModal";
 import { useState } from "react";
 import { addReview } from "../../graphql/mutation/addReview";
+import { cancelBooking as CANCEL_BOOKING } from "../../graphql/mutation/cancelBooking";
 
 const Booking = () => {
   const { data, loading, error } = useQuery(myBookings);
@@ -22,6 +23,15 @@ const Booking = () => {
       setModalOpen(false);
       setRating(0);
       setComment("");
+    },
+    onError: (err) => {
+      alert(err.message);
+    },
+  });
+  const [cancelBookingMutation] = useMutation(CANCEL_BOOKING, {
+    onCompleted: () => {
+      alert("Booking cancelled successfully!");
+      window.location.reload();
     },
     onError: (err) => {
       alert(err.message);
@@ -59,6 +69,14 @@ const Booking = () => {
     setModalOpen(true);
   };
 
+  const handleCancelBooking = (bookingId) => {
+    if (window.confirm("Are you sure you want to cancel this booking?")) {
+      cancelBookingMutation({
+        variables: { cancelBookingId: bookingId },
+      });
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -92,6 +110,7 @@ const Booking = () => {
                   Check Out
                 </th>
                 <th style={{ padding: "10px", textAlign: "left" }}>Review</th>
+                <th style={{ padding: "10px", textAlign: "left" }}>Actions</th>
               </tr>
             </thead>
 
@@ -101,11 +120,11 @@ const Booking = () => {
                   <td style={{ padding: "10px" }}>{booking.id}</td>
 
                   <td style={{ padding: "10px" }}>
-                    {booking.room?.number ?? "N/A"}
+                    {booking.room ? booking.room.number : "Room Deleted"}
                   </td>
 
                   <td style={{ padding: "10px" }}>
-                    {booking.room?.type ?? "N/A"}
+                    {booking.room ? booking.room.type : "Unknown"}
                   </td>
 
                   <td style={{ padding: "10px" }}>₹{booking.totalPrice}</td>
@@ -137,6 +156,23 @@ const Booking = () => {
                         }}
                       >
                         Review
+                      </button>
+                    )}
+                  </td>
+                  <td>
+                    {booking.status === "CONFIRMED" && (
+                      <button
+                        onClick={() => handleCancelBooking(booking.id)}
+                        style={{
+                          padding: "6px 12px",
+                          backgroundColor: "#e41b1bff",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Cancel Booking
                       </button>
                     )}
                   </td>
