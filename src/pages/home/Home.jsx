@@ -1,43 +1,8 @@
-import React, { useState } from "react";
 import Navbar from "../../components/navbar/Navbar";
 import Footer from "../../components/footer/Footer";
-import axiosInstance from "../../utils/axiosInstance";
 import "../home/home.css";
 
 const Home = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
-
-  const [responseMessage, setResponseMessage] = useState("");
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axiosInstance.post("/contacts/create", formData); // API endpoint to handle contact submissions
-      setResponseMessage(
-        response.data.message || "Your message has been sent successfully!"
-      );
-      setFormData({ name: "", email: "", phone: "", message: "" }); // Clear form fields
-    } catch (error) {
-      console.error(
-        "Error submitting contact form:",
-        error.response?.data || error
-      );
-      setResponseMessage(
-        error.response?.data?.message ||
-          "Failed to send your message. Please try again later."
-      );
-    }
-  };
-
   return (
     <>
       <Navbar />
