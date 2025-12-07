@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./adminpannel.css";
 import { useMutation } from "@apollo/client/react";
 import { createRoom } from "../../graphql/mutation/createRoom"; // adjust path
-import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client/react";
 import { bookings as BOOKINGS_QUERY } from "../../graphql/queries/bookings";
 import Navbar from "../../components/navbar/Navbar";
 
 const AdminPage = () => {
-  const navigate = useNavigate();
   const [roomDetails, setRoomDetails] = useState({
     number: "",
     type: "",

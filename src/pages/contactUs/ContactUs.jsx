@@ -13,7 +13,7 @@ const ContactUs = () => {
   const [responseMessage, setResponseMessage] = useState("");
 
   //add the contact submission logic here
-  const [contactsubmitMutation, { loading }] = useMutation(submitContact);
+  const [contactsubmitMutation] = useMutation(submitContact);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
