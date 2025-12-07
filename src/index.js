@@ -7,8 +7,11 @@ import { ApolloClient, HttpLink, InMemoryCache, gql } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
 import { UserProvider } from "./context/UserContext";
 import { setContext } from "@apollo/client/link/context";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_GRAPHQL_URL_PROD;
 
-const httpLink = new HttpLink({ uri: "http://localhost:4000/graphql" });
+const httpLink = new HttpLink({
+  uri: process.env.REACT_APP_BACKEND_GRAPHQL_URL_PROD,
+});
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem("token");

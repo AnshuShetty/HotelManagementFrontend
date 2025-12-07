@@ -8,8 +8,7 @@ import { deleteRoom as DELETE_ROOM } from "../../graphql/mutation/deleteRoom";
 const AdminRoom = () => {
   const { data, loading, error, refetch } = useQuery(roomBookCount);
   const [updateRoom] = useMutation(UPDATE_ROOM);
-  const [deleteRoom, { loading: deleteRoomLoading, error: deleteRoomError }] =
-    useMutation(DELETE_ROOM);
+  const [deleteRoom] = useMutation(DELETE_ROOM);
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);

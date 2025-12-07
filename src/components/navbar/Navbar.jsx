@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../navbar/navbar.css";
-import axiosInstance from "../../utils/axiosInstance";
 import logo from "../../assets/logo.png";
 
 const Navbar = () => {

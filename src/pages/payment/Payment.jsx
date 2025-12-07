@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
 import Footer from "../../components/footer/Footer";
@@ -15,8 +15,7 @@ const Payment = () => {
 
   /** ---------- Get logged-in user automatically ---------- */
   const { data: userData } = useQuery(ME_QUERY);
-  const userId = userData?.me?.id; // fetched from token
-
+  // const userId = userData?.me?.id;
   /** ---------- Local state ---------- */
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
