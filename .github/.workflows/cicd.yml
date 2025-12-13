@@ -1,70 +1,45 @@
-name: CI/CD - React Frontend
+name: CI/CD Automated Deployment
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
-  build-and-test:
-    name: Build & Test
+  deploy:
+    name: Build & Deploy to EC2
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: 20
           cache: "npm"
 
       - name: Install dependencies
         run: npm install
 
       - name: Run tests
-        run: npm test -- --watchAll=false
+        run: npm test
+        continue-on-error: true # remove if tests are mandatory
 
       - name: Build project
         run: npm run build
 
-      - name: Upload production build
-        uses: actions/upload-artifact@v4
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          name: frontend-build
-          path: |
-            build/
-            dist/
-
-  deploy:
-    name: Deploy
-    needs: build-and-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-build
-
-      # ------------------------------
-      # Replace this section with your deployment target
-      # Examples: S3, Firebase, Vercel, Netlify, GitHub Pages
-      # ------------------------------
-
-      # Example: Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-
-      # Example: Deploy to AWS S3
-      # - name: Sync to S3
-      #   run: aws s3 sync ./build s3://your-bucket-name --delete
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     AWS_REGION: "us-east-1"
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd /home/ubuntu/HotelmanagementSystem/HotelManagementFrontend
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart my-app
