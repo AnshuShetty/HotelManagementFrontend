@@ -23,7 +23,7 @@ const Home = () => {
                 numquam eveniet ad ut asperiores dolor reprehenderit sunt
                 perferendis cupiditate at?
               </p>
-              <h2>Hello CICD Testing</h2>
+              {/* <h2>Hello CICD Testing</h2> */}
             </div>
           </div>
         </div>
