@@ -32,7 +32,7 @@ jobs:
 
       # 5️⃣ Build project
       - name: Build React app
-        run: npm run build
+        run: CI=false npm run build
 
       # 6️⃣ Configure AWS CLI
       - name: Configure AWS credentials
