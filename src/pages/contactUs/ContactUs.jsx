@@ -2,6 +2,8 @@ import { useState } from "react";
 import "../contactUs/contactus.css";
 import { submitContact } from "../../graphql/mutation/submitContact";
 import { useMutation } from "@apollo/client/react";
+import Navbar from "../../components/navbar/Navbar";
+import Footer from "../../components/footer/Footer";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -38,42 +40,46 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="contact">
-      <h2>Contact Us</h2>
-      <div className="contact-container">
-        {/* Contact Form */}
-        <form className="contact-form" onSubmit={handleSubmit}>
-          <label>Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+    <>
+      <Navbar />
+      <div className="contact">
+        <h2>Contact Us</h2>
+        <div className="contact-container">
+          {/* Contact Form */}
+          <form className="contact-form" onSubmit={handleSubmit}>
+            <label>Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
 
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
 
-          <label>Message</label>
-          <textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-          ></textarea>
+            <label>Message</label>
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              required
+            ></textarea>
 
-          <button type="submit">Submit</button>
-          {responseMessage && <p className="response">{responseMessage}</p>}
-        </form>
+            <button type="submit">Submit</button>
+            {responseMessage && <p className="response">{responseMessage}</p>}
+          </form>
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 
