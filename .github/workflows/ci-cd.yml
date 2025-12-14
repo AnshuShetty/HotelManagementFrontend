@@ -32,6 +32,8 @@ jobs:
 
       # 5️⃣ Build project
       - name: Build React app
+        env:
+          REACT_APP_BACKEND_GRAPHQL_URL_PROD: http://13.203.123.126:4000/graphql
         run: CI=false npm run build
 
       # 6️⃣ Configure AWS CLI
