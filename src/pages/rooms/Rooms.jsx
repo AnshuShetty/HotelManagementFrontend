@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuery } from "@apollo/client/react";
 import { getRooms } from "../../graphql/queries/rooms";
 import RoomCard from "../../components/roomCard/RoomCard";
