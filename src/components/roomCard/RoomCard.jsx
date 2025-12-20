@@ -65,7 +65,7 @@ const RoomCard = ({
       <div
         className="favorite-icon"
         onClick={() => {
-          if (typeof onToggleFavorite === "function") onToggleFavorite(id);
+          if (typeof onToggleFavorite === "function") onToggleFavorite();
         }}
       >
         {isFavorite ? (

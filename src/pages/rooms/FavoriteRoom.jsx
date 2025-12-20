@@ -1,108 +1,72 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Navbar from "../../components/navbar/Navbar";
+import Footer from "../../components/footer/Footer";
+import RoomCard from "../../components/roomCard/RoomCard";
 
-const FavoriteRoom = ({ favoriteRooms }) => {
-  // keep local state so component updates safely and can fallback to localStorage
-  const [favorites, setFavorites] = useState(
-    Array.isArray(favoriteRooms) ? favoriteRooms : []
-  );
+const HeartFilled = ({ className }) => (
+  <svg
+    className={className}
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+  </svg>
+);
 
+const FavoriteRoom = () => {
+  const [favorites, setFavorites] = useState([]);
+
+  // ALWAYS re-read favorites when page is visited
   useEffect(() => {
-    if (Array.isArray(favoriteRooms)) {
-      setFavorites(favoriteRooms);
-      return;
-    }
-    // fallback: try to read favorites from localStorage (if your app stores them there)
-    try {
-      const stored = JSON.parse(localStorage.getItem("favoriteRooms"));
-      if (Array.isArray(stored)) setFavorites(stored);
-    } catch (e) {
-      // ignore parse errors and keep empty list
-    }
-  }, [favoriteRooms]);
+    const loadFavorites = () => {
+      try {
+        const stored = JSON.parse(localStorage.getItem("favoriteRooms"));
+        if (Array.isArray(stored)) setFavorites(stored);
+      } catch {}
+    };
+
+    loadFavorites();
+    window.addEventListener("focus", loadFavorites);
+
+    return () => window.removeEventListener("focus", loadFavorites);
+  }, []);
+
+  const onToggleFavorite = (roomId) => {
+    const updated = favorites.filter((r) => r.id !== roomId);
+    setFavorites(updated);
+    localStorage.setItem("favoriteRooms", JSON.stringify(updated));
+  };
 
   return (
-    <div style={styles.page}>
-      <h1 style={styles.title}>Your Favourite Rooms</h1>
+    <>
+      <Navbar />
+      <h1 style={{ margin: "20px" }}>Your Favourite Rooms</h1>
 
       {favorites.length === 0 ? (
-        <p style={styles.empty}>No favourite rooms added yet.</p>
+        <p style={{ margin: "20px" }}>No favourite rooms yet.</p>
       ) : (
-        <div style={styles.list}>
-          {favorites.map((room, idx) => (
-            <RoomCard key={room.id || room._id || idx} room={room} />
+        <div style={{ display: "flex", gap: "12px" }}>
+          {favorites.map((room) => (
+            <RoomCard
+              key={room.id}
+              id={room.id}
+              image={room.images?.[0]}
+              title={`Room ${room.number}`}
+              description={room.type}
+              price={room.pricePerNight}
+              availability={room.isActive}
+              isFavorite={true}
+              onToggleFavorite={() => onToggleFavorite(room.id)}
+            />
           ))}
         </div>
       )}
-    </div>
+
+      <Footer />
+    </>
   );
-};
-
-// Room Card Component
-const RoomCard = ({ room }) => {
-  return (
-    <div style={styles.card}>
-      <img
-        src={
-          room.image ||
-          room.img ||
-          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
-        }
-        alt={room.name || room.title || "Room"}
-        style={styles.image}
-      />
-
-      <div style={styles.details}>
-        <h2 style={styles.roomName}>
-          {room.name || room.title || "Untitled Room"}
-        </h2>
-        <p style={styles.description}>
-          {room.description || room.type || "No description."}
-        </p>
-      </div>
-    </div>
-  );
-};
-
-// Inline CSS styles (you may replace with CSS file)
-const styles = {
-  page: {
-    padding: "20px",
-    fontFamily: "Arial, sans-serif",
-  },
-  title: {
-    marginBottom: "20px",
-  },
-  empty: {
-    fontStyle: "italic",
-    color: "#777",
-  },
-  list: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-    gap: "20px",
-  },
-  card: {
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    overflow: "hidden",
-    background: "#fff",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-  },
-  image: {
-    width: "100%",
-    height: "160px",
-    objectFit: "cover",
-  },
-  details: {
-    padding: "12px",
-  },
-  roomName: {
-    margin: "0 0 6px 0",
-  },
-  description: {
-    margin: 0,
-    color: "#555",
-  },
 };
 
 export default FavoriteRoom;
