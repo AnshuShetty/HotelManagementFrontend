@@ -23,7 +23,6 @@ const Home = () => {
                 numquam eveniet ad ut asperiores dolor reprehenderit sunt
                 perferendis cupiditate at?
               </p>
-              <h2>This is Automated</h2>
             </div>
           </div>
         </div>
