@@ -143,7 +143,7 @@ const Booking = () => {
                       : "N/A"}
                   </td>
                   <td>
-                    {booking.status === "CONFIRMED" && (
+                    {booking.status === "COMPLETED" && (
                       <button
                         onClick={() => handleReview(booking.id)}
                         style={{
