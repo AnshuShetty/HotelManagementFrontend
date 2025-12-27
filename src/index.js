@@ -9,7 +9,10 @@ import { UserProvider } from "./context/UserContext";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = new HttpLink({
-  uri: process.env.REACT_APP_BACKEND_GRAPHQL_URL_PROD,
+  uri:
+    process.env.NODE_ENV === "production"
+      ? process.env.REACT_APP_BACKEND_GRAPHQL_URL_PROD
+      : process.env.REACT_APP_BACKEND_GRAPHQL_URL_DEV,
 });
 
 const authLink = setContext((_, { headers }) => {
