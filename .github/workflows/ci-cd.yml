@@ -30,6 +30,9 @@ jobs:
         run: echo "Skipping frontend tests in CI/CD"
         continue-on-error: true
 
+      - name: Debug env variable
+        run: echo "GRAPHQL URL=$REACT_APP_BACKEND_GRAPHQL_URL_PROD"
+
       # 5️⃣ Build project
       - name: Build React app
         env:
