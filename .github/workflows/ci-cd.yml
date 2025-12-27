@@ -9,6 +9,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    env:
+      REACT_APP_BACKEND_GRAPHQL_URL_PROD: ${{ secrets.REACT_APP_BACKEND_GRAPHQL_URL_PROD }}
+
     steps:
       # 1️⃣ Checkout code
       - name: Checkout repository
@@ -35,8 +38,6 @@ jobs:
 
       # 5️⃣ Build project
       - name: Build React app
-        env:
-          REACT_APP_BACKEND_GRAPHQL_URL_PROD: ${{ secrets.REACT_APP_BACKEND_GRAPHQL_URL_PROD }}
         run: CI=false npm run build
 
       # 6️⃣ Configure AWS CLI
