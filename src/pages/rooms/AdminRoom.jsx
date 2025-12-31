@@ -34,16 +34,17 @@ const AdminRoom = () => {
   const handleUpdateRoom = (room) => {
     setSelectedRoom(room);
 
-    setFormData({
-      type: room.type,
-      pricePerNight: room.pricePerNight,
-      number: room.number,
+    const updatedFormData = {
+      type: room.type || "",
+      pricePerNight: room.pricePerNight || "",
+      number: room.number || "",
       // normalize boolean to string for the select control
       isActive: room.isActive ? "true" : "false",
       images: room.images?.join(", ") || "",
       amenities: room.amenities?.join(", ") || "",
-    });
+    };
 
+    setFormData(updatedFormData);
     setIsModalOpen(true);
   };
 
@@ -117,6 +118,7 @@ const AdminRoom = () => {
             <th style={styles.th}>Amenities</th>
             <th style={styles.th}>Room Type</th>
             <th style={styles.th}>Bookings</th>
+            <th style={styles.th}>Price Per Night</th>
             <th style={styles.th}>Actions</th>
           </tr>
         </thead>
@@ -128,6 +130,7 @@ const AdminRoom = () => {
               <td style={styles.td}>{room.amenities?.join(", ") || "None"}</td>
               <td style={styles.td}>{room.type}</td>
               <td style={styles.td}>{room.bookingCount}</td>
+              <td style={styles.td}>{room.pricePerNight}</td>
               <td style={styles.td}>
                 <button
                   style={styles.updateBtn}
@@ -149,7 +152,7 @@ const AdminRoom = () => {
 
       {/* ------------------- Modal ------------------- */}
       {isModalOpen && (
-        <div style={styles.modalOverlay}>
+        <div style={styles.modalOverlay} key={selectedRoom?.id}>
           <div style={styles.modalContent}>
             <h2>Update Room</h2>
 
