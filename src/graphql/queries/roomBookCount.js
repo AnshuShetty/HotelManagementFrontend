@@ -6,7 +6,9 @@ export const roomBookCount = gql(`
     id
     number
     type
-    bookingCount   
+    bookingCount,
+    amenities,
+    pricePerNight   
   }
 }
  
