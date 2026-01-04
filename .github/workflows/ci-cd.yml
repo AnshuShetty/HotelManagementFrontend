@@ -33,7 +33,7 @@ jobs:
       # 5️⃣ Build project
       - name: Build React app
         env:
-          REACT_APP_BACKEND_GRAPHQL_URL_PROD: https://d2g5hra05xuo9.cloudfront.net/graphql
+          REACT_APP_BACKEND_GRAPHQL_URL_PROD: ${{ secrets.REACT_APP_BACKEND_GRAPHQL_URL_PROD }}
         run: CI=false npm run build
 
       # 6️⃣ Configure AWS CLI
