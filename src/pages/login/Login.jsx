@@ -1,48 +1,25 @@
-import React, { useState } from "react";
 import "../login/login.css";
-import { useNavigate } from "react-router-dom";
-import { useMutation } from "@apollo/client/react"; // Apollo hook
-import { login as LOGIN_MUTATION } from "../../graphql/mutation/login"; // Your GraphQL mutation
+import { useAuth } from "../../hooks/useAuth";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const initialValues = { email: "", password: "" };
+  const { login, loading, error } = useAuth();
 
-  // Apollo useMutation hook
-  const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION);
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .trim()
+      .email("Enter a valid email")
+      .required("Email is required"),
+    password: Yup.string().required("Password is required"),
+  });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError(""); // reset error
-
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const { data } = await loginMutation({
-        variables: {
-          input: {
-            email,
-            password,
-          },
-        },
-      });
-
-      // Destructure user and token from GraphQL response
-      const { token, user } = data.login;
-
-      // Store in localStorage
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", user.name);
-      localStorage.setItem("role", user.role);
-
-      console.log("Login Successful:", data);
-
-      navigate("/"); // redirect after successful login
-    } catch (err) {
-      // Apollo error handling
-      const errorMessage =
-        err.message || "Login failed. Please check your credentials.";
-      setError(errorMessage);
+      await login(values.email, values.password);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -51,31 +28,27 @@ const Login = () => {
       <h2>Hotel Avinya</h2>
       <h2>Login</h2>
       {error && <p className="error-message">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Password:</label>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+      >
+        <Form>
+          <div className="form-group">
+            <label>Email:</label>
+            <Field type="email" name="email" />
+            <ErrorMessage name="email" component="div" className="error" />
+          </div>
+          <div className="form-group">
+            <label>Password:</label>
+            <Field type="password" name="password" />
+            <ErrorMessage name="password" component="div" className="error" />
+          </div>
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </Form>
+      </Formik>
       <p className="register-link">
         No account? <a href="/register">Register here!</a>
       </p>

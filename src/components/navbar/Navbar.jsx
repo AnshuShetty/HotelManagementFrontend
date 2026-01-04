@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../navbar/navbar.css";
 import logo from "../../assets/logo.png";
+import { useAuth } from "../../hooks/useAuth";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -8,17 +9,7 @@ const Navbar = () => {
   const [username, setUsername] = useState("");
   const [role, setRole] = useState("");
 
-  const handleLogout = () => {
-    // Remove token, role, and username from localStorage
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("user");
-
-    // Update state
-    setIsAuthenticated(false);
-    setUsername("");
-    setRole("");
-  };
+  const { logout } = useAuth();
 
   useEffect(() => {
     // Check if user is already authenticated
@@ -87,7 +78,7 @@ const Navbar = () => {
               <>
                 <li className="username">{username}</li>
                 <li>
-                  <button onClick={handleLogout}>Logout</button>
+                  <button onClick={logout}>Logout</button>
                 </li>
               </>
             ) : (

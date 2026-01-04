@@ -1,39 +1,16 @@
-import React from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
 import Footer from "../../components/footer/Footer";
 import "../roomDetails/roomDetail.css";
-import { useQuery } from "@apollo/client/react";
-import { getRoom } from "../../graphql/queries/room";
-import { getReviews } from "../../graphql/queries/getReviews";
+import { useRoomDetails } from "../../hooks/useRoomDetails";
 
 const RoomDetails = () => {
   const { id } = useParams(); // roomId
 
-  // Fetch basic room details
-  const {
-    loading: roomLoading,
-    error: roomError,
-    data: roomData,
-  } = useQuery(getRoom, {
-    variables: { roomId: id },
-  });
+  const { room, reviews, loading, error, avgRating } = useRoomDetails(id);
 
-  // Fetch reviews
-  const {
-    loading: reviewLoading,
-    error: reviewError,
-    data: reviewData,
-  } = useQuery(getReviews, {
-    variables: { roomId: id },
-  });
-
-  if (roomLoading || reviewLoading) return <p>Loading room details...</p>;
-  if (roomError) return <p>Error fetching room: {roomError.message}</p>;
-  if (reviewError) return <p>Error fetching reviews: {reviewError.message}</p>;
-
-  const room = roomData?.room;
-  const reviews = reviewData?.getReviews || [];
+  if (loading) return <p>Loading room details...</p>;
+  if (error) return <p>Error fetching data: {error.message}</p>;
 
   if (!room) {
     return (
@@ -43,14 +20,6 @@ const RoomDetails = () => {
       </div>
     );
   }
-
-  // ⭐ Calculate average rating
-  const avgRating =
-    reviews.length > 0
-      ? (
-          reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-        ).toFixed(1)
-      : null;
 
   return (
     <>

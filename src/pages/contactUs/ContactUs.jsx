@@ -4,39 +4,48 @@ import { submitContact } from "../../graphql/mutation/submitContact";
 import { useMutation } from "@apollo/client/react";
 import Navbar from "../../components/navbar/Navbar";
 import Footer from "../../components/footer/Footer";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 const ContactUs = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
   const [responseMessage, setResponseMessage] = useState("");
 
-  //add the contact submission logic here
   const [contactsubmitMutation] = useMutation(submitContact);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const validationSchema = Yup.object({
+    name: Yup.string().min(3).trim().required("Name is required"),
+    email: Yup.string()
+      .trim()
+      .email("Enter a valid email")
+      .required("Email is required"),
+    message: Yup.string().trim().required("Message is required"),
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    contactsubmitMutation({
-      variables: {
-        input: {
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
+  const initialValues = { name: "", email: "", message: "" };
+
+  const handleSubmit = async (values, { resetForm, setSubmitting }) => {
+    console.log("Formik values:", values);
+    try {
+      setSubmitting(true);
+      await contactsubmitMutation({
+        variables: {
+          input: {
+            name: values.name,
+            email: values.email,
+            message: values.message,
+          },
         },
-      },
-    });
-    setResponseMessage(
-      "Thanks for contacting us! We will get back to you soon."
-    );
-    setFormData({ name: "", email: "", phone: "", message: "" });
+      });
+      setResponseMessage(
+        "Thanks for contacting us! We will get back to you soon."
+      );
+      resetForm();
+    } catch (err) {
+      setResponseMessage("Something went wrong. Please try again later.");
+      console.error(err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -45,37 +54,55 @@ const ContactUs = () => {
       <div className="contact">
         <h2>Contact Us</h2>
         <div className="contact-container">
-          {/* Contact Form */}
-          <form className="contact-form" onSubmit={handleSubmit}>
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ isSubmitting }) => (
+              <Form className="contact-form" noValidate>
+                <label>Name</label>
+                <Field type="text" name="name" />
+                <ErrorMessage
+                  name="name"
+                  render={(msg) => (
+                    <div className="error" style={{ color: "red" }}>
+                      {msg}
+                    </div>
+                  )}
+                />
 
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+                <label>Email</label>
+                <Field type="email" name="email" />
+                <ErrorMessage
+                  name="email"
+                  render={(msg) => (
+                    <div className="error" style={{ color: "red" }}>
+                      {msg}
+                    </div>
+                  )}
+                />
 
-            <label>Message</label>
-            <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              required
-            ></textarea>
+                <label>Message</label>
+                <Field as="textarea" name="message" />
+                <ErrorMessage
+                  name="message"
+                  render={(msg) => (
+                    <div className="error" style={{ color: "red" }}>
+                      {msg}
+                    </div>
+                  )}
+                />
 
-            <button type="submit">Submit</button>
-            {responseMessage && <p className="response">{responseMessage}</p>}
-          </form>
+                <button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Sending..." : "Submit"}
+                </button>
+                {responseMessage && (
+                  <p className="response">{responseMessage}</p>
+                )}
+              </Form>
+            )}
+          </Formik>
         </div>
       </div>
       <Footer />
