@@ -3,9 +3,11 @@ import ReactDOM from "react-dom/client";
 import "./index.css"; // This will link the index.css file
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { ApolloClient, HttpLink, InMemoryCache, gql } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
-import { UserProvider } from "./context/UserContext";
+import { AuthProvider } from "./context/AuthContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
+import { BookingProvider } from "./context/BookingContext";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = new HttpLink({
@@ -36,11 +38,17 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <UserProvider>
-        <App />
-      </UserProvider>
+      {/* <UserProvider> */}
+      <AuthProvider>
+        <FavoritesProvider>
+          <BookingProvider>
+            <App />
+          </BookingProvider>
+        </FavoritesProvider>
+      </AuthProvider>
+      {/* </UserProvider> */}
     </ApolloProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 reportWebVitals();

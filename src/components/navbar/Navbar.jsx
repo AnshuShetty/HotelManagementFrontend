@@ -1,38 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../navbar/navbar.css";
 import logo from "../../assets/logo.png";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuthContext } from "../../context/AuthContext";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState("");
-  const [role, setRole] = useState("");
-
-  const { logout } = useAuth();
-
-  useEffect(() => {
-    // Check if user is already authenticated
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-    const storedRole = localStorage.getItem("role");
-
-    let displayName = "";
-    if (storedUser) {
-      try {
-        const userObj = JSON.parse(storedUser);
-        displayName = userObj.name || storedUser;
-      } catch {
-        displayName = storedUser;
-      }
-    }
-
-    if (token) {
-      setIsAuthenticated(true);
-      setUsername(displayName);
-      setRole(storedRole);
-    }
-  }, []);
+  const { auth, logout } = useAuthContext();
 
   return (
     <div className="navbar">
@@ -49,24 +22,30 @@ const Navbar = () => {
         <div className={`nav-ele ${menuOpen ? "open" : ""}`}>
           <ul>
             <li>
-              <a href={role === "ADMIN" ? "/admin/app/page" : "/"}>Home</a>
+              <a
+                href={
+                  String(auth.role || "") === "ADMIN" ? "/admin/app/page" : "/"
+                }
+              >
+                Home
+              </a>
             </li>
-            {String(role || "") !== "ADMIN" && (
+            {String(auth.role || "") !== "ADMIN" && (
               <li>
                 <a href="/rooms">Rooms</a>
               </li>
             )}
-            {String(role || "") === "ADMIN" && (
+            {String(auth.role || "") === "ADMIN" && (
               <li>
                 <a href="/admin/app/room">Room</a>
               </li>
             )}
-            {String(role || "") !== "ADMIN" && (
+            {String(auth.role || "") !== "ADMIN" && (
               <li>
                 <a href="/mybookings">Bookings</a>
               </li>
             )}
-            {String(role || "") !== "ADMIN" && (
+            {String(auth.role || "") !== "ADMIN" && (
               <li>
                 <a href="/favorites">Favorites</a>
               </li>
@@ -74,9 +53,11 @@ const Navbar = () => {
             <li>
               <a href="/contact">Contact</a>
             </li>
-            {isAuthenticated ? (
+            {auth.isAuthenticated ? (
               <>
-                <li className="username">{username}</li>
+                <li className="username">
+                  {typeof auth.user === "object" ? auth.user?.name : auth.user}
+                </li>
                 <li>
                   <button onClick={logout}>Logout</button>
                 </li>
